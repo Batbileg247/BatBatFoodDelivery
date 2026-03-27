@@ -5,8 +5,6 @@ import { Card } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -17,28 +15,40 @@ import { LoaderCircle, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ChangeEventHandler, useState } from "react";
 
-export function AddFood({ categoryName }: { categoryName: string }) {
+export function AddFood({
+  categoryName,
+  id,
+}: {
+  categoryName: string;
+  id: number;
+}) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [food, setFood] = useState<{
+    name: string;
+    price: number;
+    ingredients: string;
+    image: string;
+  }>({ name: "", price: 0, ingredients: "", image: "" });
   const router = useRouter();
 
   const onChange: ChangeEventHandler<HTMLInputElement, HTMLInputElement> = (
     e,
   ) => {
-    // setCategoryName(e.target.value);
+    setFood({ ...food, [e.target.name]: e.target.value });
   };
 
-  const postCategories = async () => {
-    // if (categoryName === "") {
-    //   return;
-    // }
-
-    setLoading(true);
+  const postFood = async () => {
+    setLoading(true); 
     const postBody = {
-      //   categoryName: categoryName,
+      name: food.name,
+      price: String(food.price),
+      foodCatId: id,
+      ingredients: food.ingredients,
+      image: food.image,
     };
     try {
-      await fetch("http://localhost:3001/categories", {
+      await fetch("http://localhost:3001/food", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -57,7 +67,7 @@ export function AddFood({ categoryName }: { categoryName: string }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Card className="w-full aspect-4/3 border-[#EF4444] border-dashed border-2 flex flex-col justify-center  items-center">
+        <Card className="w-full aspect-4/3 hover:brightness-95 cursor-pointer border-[#EF4444] border-dashed border-2 flex flex-col justify-center  items-center">
           <Button size="icon" className="rounded-full bg-[#EF4444] w-10 h-10">
             <Plus className="w-10 h-10" />
           </Button>
@@ -75,38 +85,41 @@ export function AddFood({ categoryName }: { categoryName: string }) {
 
           <div className="flex gap-6">
             <div className="flex flex-col gap-2">
-              <Label>Category name</Label>
+              <Label>Food name</Label>
               <Input
                 type="text"
                 onChange={onChange}
-                placeholder="Type category name..."
+                placeholder="Type food name..."
                 className="border-2"
+                name="name"
               />
             </div>
             <div className="flex flex-col gap-2">
-              <Label>Category name</Label>
+              <Label>Food price</Label>
               <Input
                 type="text"
                 onChange={onChange}
-                placeholder="Type category name..."
+                placeholder="Enter price..."
                 className="border-2"
+                name="price"
               />
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <Label>Category name</Label>
+            <Label>Ingredients</Label>
             <Input
               type="text"
               onChange={onChange}
-              placeholder="Type category name..."
+              placeholder="List ingredients..."
               className="border-2"
+              name="ingredients"
             />
           </div>
 
           <Button
             type="submit"
             className="w-full"
-            onClick={postCategories}
+            onClick={postFood}
             disabled={loading}
           >
             {loading ? <LoaderCircle className="animate-spin" /> : "Add dish"}

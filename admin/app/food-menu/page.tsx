@@ -3,7 +3,7 @@ import { FoodCategory } from "./_components/FoodCategory";
 
 const FoodMenuPage = () => {
   return (
-    <div className="m-6 gap-6 flex flex-col">
+    <div className="m-6 gap-6 flex flex-col items-center">
       <FoodCategory />
       <FoodCards />
     </div>
