@@ -39,7 +39,15 @@ export function AddFood({
   };
 
   const postFood = async () => {
-    setLoading(true); 
+    if (
+      food.image === "" ||
+      food.ingredients === "" ||
+      food.price === null ||
+      food.name === ""
+    ) {
+      return;
+    }
+    setLoading(true);
     const postBody = {
       name: food.name,
       price: String(food.price),
@@ -68,7 +76,10 @@ export function AddFood({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Card className="w-full aspect-4/3 hover:brightness-95 cursor-pointer border-[#EF4444] border-dashed border-2 flex flex-col justify-center  items-center">
-          <Button size="icon" className="rounded-full bg-[#EF4444] w-10 h-10">
+          <Button
+            size="icon"
+            className="rounded-full cursor-pointer bg-[#EF4444] w-10 h-10"
+          >
             <Plus className="w-10 h-10" />
           </Button>
           <h1 className="text-[14px] font-semibold">Add new Dish to Salads </h1>
@@ -113,6 +124,16 @@ export function AddFood({
               placeholder="List ingredients..."
               className="border-2"
               name="ingredients"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label>Image</Label>
+            <Input
+              type="text"
+              onChange={onChange}
+              placeholder="Image URL..."
+              className="border-2"
+              name="image"
             />
           </div>
 
