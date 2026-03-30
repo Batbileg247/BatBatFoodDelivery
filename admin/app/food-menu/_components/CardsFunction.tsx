@@ -16,13 +16,14 @@ import { LoaderCircle, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ChangeEventHandler, useState } from "react";
 import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "@/components/ui/combobox";
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function CardsFunction({
   food,
@@ -38,9 +39,7 @@ export function CardsFunction({
     price: food.price,
     ingredients: food.ingredients,
     image: food.image,
-    // Fallback to empty string if food.foodCatId is missing
-    // Change initialization:
-    foodCatId: food.foodCatId ?? 0, // use 0 or null instead of ""
+    foodCatId: food.foodCatId ?? 0,
   });
   const router = useRouter();
 
@@ -48,6 +47,10 @@ export function CardsFunction({
     e,
   ) => {
     setUpdateFood({ ...updateFood, [e.target.name]: e.target.value });
+  };
+
+  const onSelect = (foodCatId: number) => {
+    setUpdateFood({ ...updateFood, foodCatId });
   };
 
   const putFood = async () => {
@@ -142,7 +145,7 @@ export function CardsFunction({
             <DialogTitle>Dishes info</DialogTitle>
           </DialogHeader>
 
-          <div className="flex w-full gap-2 text-[#71717A]">
+          <div className="flex w-full gap-2">
             <Label>Food name</Label>
             <Input
               type="text"
@@ -153,31 +156,27 @@ export function CardsFunction({
               defaultValue={food.name}
             />
           </div>
-          <div className="flex w-full flex-col gap-2 text-[#71717A]">
+          <div className="flex w-full gap-2">
             <Label>Food Category</Label>
-            <Combobox
-              items={category}
-              value={updateFood.foodCatId || null}
-              onValueChange={(val) => {
-                setUpdateFood({ ...updateFood, foodCatId: val as number });
-              }}
-              itemToValue={(item) => item.id} // ← tells Base UI what the "value" of each item is
-              itemToString={(item) => item?.categoryName ?? ""} // ← tells Base UI what to show/filter by
-            >
-              <ComboboxInput placeholder="Select a Category" />
-              <ComboboxContent>
-                <ComboboxEmpty>No items found.</ComboboxEmpty>
-                <ComboboxList>
-                  {(item: Category) => (
-                    <ComboboxItem key={item.id} value={item.id}>
-                      {item.categoryName}
-                    </ComboboxItem>
-                  )}
-                </ComboboxList>
-              </ComboboxContent>
-            </Combobox>
+            <Select onValueChange={(value) => onSelect(Number(value))}>
+              <SelectTrigger className="w-full border-2 border-[#E4E4E7]">
+                <SelectValue placeholder="Select a category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Category</SelectLabel>
+                  {category.map((c) => {
+                    return (
+                      <SelectItem key={c.id} value={String(c.id)}>
+                        {c.categoryName}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
-          <div className="flex w-full gap-2 text-[#71717A]">
+          <div className="flex w-full gap-2">
             <Label>Food price</Label>
             <Input
               type="text"
@@ -188,7 +187,7 @@ export function CardsFunction({
               defaultValue={food.price}
             />
           </div>
-          <div className="flex w-full gap-2 text-[#71717A]">
+          <div className="flex w-full gap-2">
             <Label>Ingredients</Label>
             <Input
               type="text"
@@ -199,7 +198,7 @@ export function CardsFunction({
               defaultValue={food.ingredients}
             />
           </div>
-          <div className="flex w-full gap-2 text-[#71717A]">
+          <div className="flex w-full gap-2">
             <Label>Image</Label>
             <Input
               type="text"

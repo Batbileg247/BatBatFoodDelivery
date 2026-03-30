@@ -69,25 +69,19 @@ export function CategoryFunction({
   const deleteCategory = async () => {
     setLoading(true);
     try {
-      const response = await fetch(
-        `http://localhost:3001/categories/${category.id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
+      await fetch(`http://localhost:3001/categories/${category.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+      });
 
-      if (response.ok) {
-        setOpen(false);
-        router.refresh();
-      }
+      setOpen(false);
+      router.refresh();
     } catch (error) {
       console.error("Delete failed:", error);
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   return (

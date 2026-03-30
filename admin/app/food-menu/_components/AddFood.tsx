@@ -75,7 +75,7 @@ export function AddFood({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Card className="w-full aspect-4/3 hover:brightness-95 cursor-pointer border-[#EF4444] border-dashed border-2 flex flex-col justify-center  items-center">
+        <Card className="w-full p-4 aspect-4/3 flex flex-col hover:brightness-95 cursor-pointer justify-center items-center">
           <Button
             size="icon"
             className="rounded-full cursor-pointer bg-[#EF4444] w-10 h-10"
@@ -87,14 +87,14 @@ export function AddFood({
       </DialogTrigger>
 
       <DialogContent className="aspect-4/3  ">
-        <div className="flex p-2 flex-col justify-between">
+        <div className="flex p-2 gap-3 flex-col justify-between">
           <DialogHeader>
             <DialogTitle>
               Add new Dish to {categoryName.toUpperCase()}
             </DialogTitle>
           </DialogHeader>
 
-          <div className="flex gap-6">
+          <div className="flex pt-2 gap-6">
             <div className="flex flex-col gap-2">
               <Label>Food name</Label>
               <Input
@@ -126,7 +126,7 @@ export function AddFood({
               name="ingredients"
             />
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex pb-3 flex-col gap-2">
             <Label>Image</Label>
             <Input
               type="text"

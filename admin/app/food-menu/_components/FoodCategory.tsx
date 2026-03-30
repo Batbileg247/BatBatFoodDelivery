@@ -56,7 +56,7 @@ export const FoodCategory = ({
                 isActive ? "border-[#EF4444]" : "border-[#929292]"
               }`}
               variant="ghost"
-            >
+            > 
               <p>{p.categoryName}</p>
               <CategoryFunction category={p} isActive={isActive} />
             </Badge>
