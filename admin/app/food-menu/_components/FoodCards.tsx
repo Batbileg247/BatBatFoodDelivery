@@ -1,4 +1,4 @@
-"use client"; // Required to use useSearchParams
+"use client";
 
 import { Category } from "@/app/api/get-categories";
 import { AddFood } from "./AddFood";
@@ -30,7 +30,7 @@ export const FoodCards = ({ categories }: { categories: Category[] }) => {
             <div className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full">
               <AddFood categoryName={category.categoryName} id={category.id} />
               {category.foods.map((food) => {
-                return <CardsFunction key={food.id} food={food} />;
+                return <CardsFunction category={categories} key={food.id} food={food} />;
               })}
             </div>
           </div>
