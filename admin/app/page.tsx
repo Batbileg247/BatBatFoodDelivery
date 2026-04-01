@@ -7,7 +7,7 @@ export default function Home() {
         <SignIn />
       </div>
       <div>
-        <img src="/bg-img.png" alt="BatBat" />
+        <img src="/bg-img.png" alt="BatBat" className="h-[1000px]" />
       </div>
     </div>
   );
