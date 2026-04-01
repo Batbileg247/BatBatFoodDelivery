@@ -29,7 +29,7 @@ export const userLogin = async (req: Request, res: Response) => {
           },
         },
         "secret",
-        { expiresIn: "1h" },
+        { expiresIn: "100h" },
       );
       res.status(200).json({ message: "Success", data: token });
     } else {
