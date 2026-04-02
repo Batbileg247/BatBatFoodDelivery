@@ -1,6 +1,6 @@
 "use client";
 
-import { signIn } from "@/app/api/sign-in";
+import { signIn } from "@/lib/services/sign-in";
 import { Input } from "@base-ui/react";
 import { useState } from "react";
 import { Button } from "./ui/button";
@@ -15,8 +15,7 @@ export const SignIn = () => {
       password,
     };
     try {
-      const data = await signIn(credentials);
-      localStorage.setItem("token", data?.accessToken);
+      await signIn(credentials);
     } catch (error) {
       console.log(error);
     }

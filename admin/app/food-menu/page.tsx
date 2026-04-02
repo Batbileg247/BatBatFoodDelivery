@@ -1,5 +1,5 @@
-import { getCategories } from "../api/get-categories";
-import { FoodItem, getFoods } from "../api/get-foods";
+import { getCategories } from "../../lib/services/get-categories";
+import { FoodItem, getFoods } from "../../lib/services/get-foods";
 import { FoodCards } from "./_components/FoodCards";
 import { FoodCategory } from "./_components/FoodCategory";
 

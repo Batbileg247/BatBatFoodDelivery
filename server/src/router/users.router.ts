@@ -10,7 +10,7 @@ import { adminMiddleware } from "../middleware/admin-middleware";
 export const usersRouter = express.Router();
 
 usersRouter.get("/", authMiddleware, adminMiddleware, getUsers);
-
+    
 usersRouter.get("/me", adminMiddleware, me);
 
 usersRouter.get("/:id", getUsersById);

@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
@@ -11,55 +10,29 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Order } from "@/lib/services/get-order";
 
-const tableData = [
-  {
-    id: "1",
-    name: "Sarah Chen",
-    email: "sarah.chen@example.com",
-    role: "Admin",
-  },
-  {
-    id: "2",
-    name: "Marcus Rodriguez",
-    email: "marcus.rodriguez@example.com",
-    role: "User",
-  },
-  {
-    id: "3",
-    name: "Priya Patel",
-    email: "priya.patel@example.com",
-    role: "User",
-  },
-  {
-    id: "4",
-    name: "David Kim",
-    email: "david.kim@example.com",
-    role: "Editor",
-  },
-];
-
-export function UpdateOrderStatus() {
+export function UpdateOrderStatus({ order }: { order: Order[] }) {
   const [selectedRows, setSelectedRows] = React.useState<Set<string>>(
     new Set(["1"]),
   );
 
-  const selectAll = selectedRows.size === tableData.length;
+  const selectAll = selectedRows.size === order.length;
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedRows(new Set(tableData.map((row) => row.id)));
+      setSelectedRows(new Set(order.map((row) => String(row.id))));
     } else {
       setSelectedRows(new Set());
     }
   };
 
-  const handleSelectRow = (id: string, checked: boolean) => {
+  const handleSelectRow = (id: number, checked: boolean) => {
     const newSelected = new Set(selectedRows);
     if (checked) {
-      newSelected.add(id);
+      newSelected.add(String(id));
     } else {
-      newSelected.delete(id);
+      newSelected.delete(String(id));
     }
     setSelectedRows(newSelected);
   };
@@ -79,6 +52,7 @@ export function UpdateOrderStatus() {
               />
             </TableHead>
             <TableHead>№</TableHead>
+            <TableHead>Customer</TableHead>
             <TableHead>Food</TableHead>
             <TableHead>Date</TableHead>
             <TableHead>Total</TableHead>
@@ -87,24 +61,29 @@ export function UpdateOrderStatus() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {tableData.map((row) => (
+          {order.map((row) => (
             <TableRow
               key={row.id}
-              data-state={selectedRows.has(row.id) ? "selected" : undefined}
+              data-state={
+                selectedRows.has(String(row.id)) ? "selected" : undefined
+              }
             >
               <TableCell>
                 <Checkbox
                   id={`row-${row.id}-checkbox`}
                   name={`row-${row.id}-checkbox`}
-                  checked={selectedRows.has(row.id)}
+                  checked={selectedRows.has(String(row.id))}
                   onCheckedChange={(checked) =>
-                    handleSelectRow(row.id, checked === true)
+                    handleSelectRow(Number(row.id), checked === true)
                   }
                 />
               </TableCell>
-              <TableCell className="font-medium">{row.name}</TableCell>
-              <TableCell>{row.email}</TableCell>
-              <TableCell>{row.role}</TableCell>
+              <TableCell className="font-medium">{row.id}</TableCell>
+              <TableCell>{row.userId}</TableCell>
+              <TableCell>{row.createdAt}</TableCell>
+              <TableCell>{row.createdAt}</TableCell>
+              <TableCell>{row.totalPrice}</TableCell>
+              <TableCell>{row.status}</TableCell>
             </TableRow>
           ))}
         </TableBody>

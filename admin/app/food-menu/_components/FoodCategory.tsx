@@ -1,6 +1,6 @@
 "use client";
 
-import { Category } from "@/app/api/get-categories";
+import { Category } from "@/lib/services/get-categories";
 import { Button } from "@/components/ui/button";
 import { AddCategory } from "./AddCategory";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -56,7 +56,7 @@ export const FoodCategory = ({
                 isActive ? "border-[#EF4444]" : "border-[#929292]"
               }`}
               variant="ghost"
-            > 
+            >
               <p>{p.categoryName}</p>
               <CategoryFunction category={p} isActive={isActive} />
             </Badge>

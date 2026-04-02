@@ -25,13 +25,13 @@ export const userLogin = async (req: Request, res: Response) => {
           data: {
             userId: user.id,
             email: user.email,
-            role: "user",
+            role: user.role,
           },
         },
         "secret",
         { expiresIn: "100h" },
       );
-      res.status(200).json({ message: "Success", data: token });
+      res.status(200).json({ message: "Success", accessToken: token });
     } else {
       res.status(404).json({ message: "Password is incorrect" });
     }

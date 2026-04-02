@@ -1,6 +1,6 @@
 "use client";
 
-import { Category, Food } from "@/app/api/get-categories";
+import { Category, Food } from "@/lib/services/get-categories";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {

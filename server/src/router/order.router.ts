@@ -7,7 +7,7 @@ import { updateOrder } from "../controller/orders/update-status";
 import { adminMiddleware } from "../middleware/admin-middleware";
 import { authMiddleware } from "../middleware/auth-middleware";
 
-const orderRouter = express.Router();
+export const orderRouter = express.Router();
 
 orderRouter.get("/", authMiddleware, adminMiddleware, getOrders);
 
@@ -18,5 +18,3 @@ orderRouter.post("/", authMiddleware, addOrder);
 orderRouter.put("/:id", authMiddleware, adminMiddleware, updateOrder);
 
 orderRouter.delete("/:id", deleteOrder);
-
-export default orderRouter;
