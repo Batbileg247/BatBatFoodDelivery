@@ -35,41 +35,19 @@ import {
 } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { getOrders } from "@/lib/services/get-order";
-import { Order } from "@/lib/services/get-order";
-import { User } from "@/lib/services/get-user";
+import { getOrders, Order } from "@/lib/services/get-order";
 
 type DeliveryState = "Pending" | "Cancelled" | "Delivered";
 
-type OrderItem = {
-  id: number;
-  quantity: number;
-  foodId: number;
-  foodOrderId: number;
-  food: {
-    id: number;
-    name: string;
-    price: string;
-    img: string;
-  };
-};
-
-type OrderWithUser = Order & {
-  user?: User;
-  foodOrderItems?: OrderItem[];
-};
-
-const STATUS_VARIANT: Record<
-  string,
-  "default" | "secondary" | "destructive" | "outline"
-> = {
-  Pending: "destructive",
-  Delivered: "default",
-  Cancelled: "secondary",
-};
-
-// Custom badge style overrides since shadcn Badge variants are limited
 const STATUS_CLASS: Record<string, string> = {
+  // DB values (lowercase)
+  pending:
+    "border border-red-300 text-red-500 bg-white hover:bg-red-50 cursor-pointer",
+  delivered:
+    "border border-green-400 text-green-600 bg-white hover:bg-green-50 cursor-pointer",
+  canceled:
+    "border border-gray-300 text-gray-500 bg-white hover:bg-gray-50 cursor-pointer",
+  // UI values (capitalised — used after optimistic updates)
   Pending:
     "border border-red-300 text-red-500 bg-white hover:bg-red-50 cursor-pointer",
   Delivered:
@@ -78,13 +56,20 @@ const STATUS_CLASS: Record<string, string> = {
     "border border-gray-300 text-gray-500 bg-white hover:bg-gray-50 cursor-pointer",
 };
 
+// Map UI label → DB enum value
+const STATUS_TO_DB: Record<DeliveryState, string> = {
+  Pending: "pending",
+  Delivered: "delivered",
+  Cancelled: "canceled",
+};
+
 const DELIVERY_STATES: DeliveryState[] = ["Pending", "Delivered", "Cancelled"];
 
 const PER_PAGE = 10;
 
 export default function OrdersPage() {
-  const [orders, setOrders] = useState<OrderWithUser[]>([]);
-  const [filteredOrders, setFilteredOrders] = useState<OrderWithUser[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [openStatusMenu, setOpenStatusMenu] = useState<number | null>(null);
@@ -97,25 +82,10 @@ export default function OrdersPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const ordersData = await getOrders();
-        const safeOrders = Array.isArray(ordersData) ? ordersData : [];
-
-        const ordersWithItems = await Promise.all(
-          safeOrders.map(async (order) => {
-            try {
-              const res = await fetch(
-                `http://localhost:3001/orders/${order.id}`,
-              );
-              const data = await res.json();
-              return data.order as OrderWithUser;
-            } catch {
-              return { ...order, foodOrderItems: [] } as OrderWithUser;
-            }
-          }),
-        );
-
-        setOrders(ordersWithItems);
-        setFilteredOrders(ordersWithItems);
+        const data = await getOrders();
+        const safeOrders = Array.isArray(data.order) ? data.order : [];
+        setOrders(safeOrders);
+        setFilteredOrders(safeOrders);
       } catch (err) {
         console.error(err);
       } finally {
@@ -164,15 +134,17 @@ export default function OrdersPage() {
   };
 
   // ── Status updates ─────────────────────────────────────────────
-  const setStatus = async (id: number, status: DeliveryState) => {
+  const setStatus = async (id: number, uiStatus: DeliveryState) => {
+    const dbStatus = STATUS_TO_DB[uiStatus];
     try {
       await fetch(`http://localhost:3001/orders/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify({ status: dbStatus }),
       });
+      // Optimistic update — store the db value so STATUS_CLASS still matches
       setOrders((prev) =>
-        prev.map((o) => (o.id === id ? { ...o, status } : o)),
+        prev.map((o) => (o.id === id ? { ...o, status: dbStatus } : o)),
       );
     } catch (err) {
       console.error(err);
@@ -180,8 +152,9 @@ export default function OrdersPage() {
     setOpenStatusMenu(null);
   };
 
-  const setBulkStatus = async (status: DeliveryState) => {
+  const setBulkStatus = async (uiStatus: DeliveryState) => {
     if (selectedIds.size === 0) return;
+    const dbStatus = STATUS_TO_DB[uiStatus];
     setBulkLoading(true);
     try {
       await Promise.all(
@@ -189,12 +162,14 @@ export default function OrdersPage() {
           fetch(`http://localhost:3001/orders/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ status }),
+            body: JSON.stringify({ status: dbStatus }),
           }),
         ),
       );
       setOrders((prev) =>
-        prev.map((o) => (selectedIds.has(o.id) ? { ...o, status } : o)),
+        prev.map((o) =>
+          selectedIds.has(o.id) ? { ...o, status: dbStatus } : o,
+        ),
       );
       setSelectedIds(new Set());
     } catch (err) {
@@ -436,10 +411,8 @@ export default function OrdersPage() {
                             className="flex items-center gap-1.5 text-gray-600 px-0 h-auto"
                           >
                             <span>
-                              {order.foodOrderItems?.length ?? 0} food
-                              {(order.foodOrderItems?.length ?? 0) !== 1
-                                ? "s"
-                                : ""}
+                              {order.orderItems?.length ?? 0} food
+                              {(order.orderItems?.length ?? 0) !== 1 ? "s" : ""}
                             </span>
                             <ChevronDown size={14} />
                           </Button>
@@ -452,16 +425,15 @@ export default function OrdersPage() {
                             Order #{order.id} items
                           </DropdownMenuLabel>
                           <DropdownMenuSeparator />
-                          {order.foodOrderItems &&
-                          order.foodOrderItems.length > 0 ? (
-                            order.foodOrderItems.map((item) => (
+                          {order.orderItems && order.orderItems.length > 0 ? (
+                            order.orderItems.map((item) => (
                               <DropdownMenuItem
                                 key={item.id}
                                 className="flex items-center gap-3 py-2 cursor-default focus:bg-gray-50"
                               >
-                                {item.food?.img ? (
+                                {item.food?.image ? (
                                   <img
-                                    src={item.food.img}
+                                    src={item.food.image}
                                     alt={item.food.name}
                                     className="w-8 h-8 rounded object-cover flex-shrink-0"
                                   />
@@ -517,7 +489,7 @@ export default function OrdersPage() {
                           <button
                             className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${
                               STATUS_CLASS[order.status] ??
-                              STATUS_CLASS["Cancelled"]
+                              STATUS_CLASS["canceled"]
                             }`}
                           >
                             {order.status}

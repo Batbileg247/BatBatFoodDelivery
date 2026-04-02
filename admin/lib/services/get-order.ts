@@ -4,7 +4,6 @@ import { cookies } from "next/headers";
 
 export const getOrders = async (): Promise<GetOrderType> => {
   const cookieStore = await cookies();
-
   const token = cookieStore.get("token")?.value;
 
   const res = await fetch(`http://localhost:3001/orders`, {
@@ -13,7 +12,14 @@ export const getOrders = async (): Promise<GetOrderType> => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
+    cache: "no-store",
   });
+
+  if (!res.ok) {
+    console.error("getOrders failed:", res.status, res.statusText);
+    return { order: [] };
+  }
+
   const data = await res.json();
   return data;
 };
@@ -29,4 +35,24 @@ export interface Order {
   status: string;
   createdAt: string;
   updatedAt: string;
+  user?: {
+    id: number;
+    email: string;
+    address: string;
+    phoneNumber: string;
+  };
+  orderItems?: OrderItem[];
+}
+
+export interface OrderItem {
+  id: number;
+  quantity: number;
+  foodId: number;
+  foodOrderId: number;
+  food: {
+    id: number;
+    name: string;
+    price: string;
+    image: string;
+  };
 }
