@@ -6,7 +6,7 @@ export const getOrders = async (): Promise<GetOrderType> => {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
-  const res = await fetch(`http://localhost:3001/orders`, {
+  const res = await fetch(`https://batbatfooddeliveryx.onrender.com/orders`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

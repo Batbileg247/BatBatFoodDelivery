@@ -7,7 +7,7 @@ export const getUser = async (): Promise<GetUser> => {
 
   const token = cookieStore.get("token")?.value;
 
-  const res = await fetch(`http://localhost:3001/user`, {
+  const res = await fetch(`https://batbatfooddeliveryx.onrender.com/user`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

@@ -12,22 +12,53 @@ type SignInResponse = {
   accessToken: string;
 };
 
-export const signIn = async (credentials: Credentials) => {
+// Define a type for what the Client Component expects
+export type ActionResponse = {
+  success: boolean;
+  message: string;
+};
+
+export const signIn = async (
+  credentials: Credentials,
+): Promise<ActionResponse> => {
   const cookieStore = await cookies();
 
   try {
-    const response = await fetch("http://localhost:3001/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      "https://batbatfooddeliveryx.onrender.com/auth/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials),
       },
-      body: JSON.stringify(credentials),
-    });
+    );
 
     const data = (await response.json()) as SignInResponse;
 
-    cookieStore.set("token", data.accessToken);
+    if (!response.ok) {
+      return {
+        success: false,
+        message: data.message || "Нэвтрэх мэдээлэл буруу байна",
+      };
+    }
+
+    cookieStore.set("token", data.accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+    });
+
+    return {
+      success: true,
+      message: "Амжилттай нэвтэрлээ",
+    };
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return {
+      success: false,
+      message: "Сервертэй холбогдоход алдаа гарлаа",
+    };
   }
 };

@@ -12,7 +12,7 @@ export const putOrderStatus = async ({
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
-  const res = await fetch(`http://localhost:3001/orders/${id}`, {
+  const res = await fetch(`https://batbatfooddeliveryx.onrender.com/orders/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

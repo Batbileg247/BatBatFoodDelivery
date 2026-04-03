@@ -1,3 +1,5 @@
+import { cookies } from "next/headers";
+
 export interface FoodItem {
   id: number;
   name: string;
@@ -8,20 +10,23 @@ export interface FoodItem {
   createdAt: string;
   updatedAt: string;
 }
-
-// 1. Define the response as an object containing the food array
 export interface FoodApiResponse {
   food: FoodItem[];
 }
-
-// 2. Remove the extra [] from the Promise return type
 export const getFoods = async (): Promise<FoodApiResponse> => {
-  const res = await fetch(`http://localhost:3001/food`, {
+  const cookieStore = await cookies();
+
+  const token = cookieStore.get("token")?.value;
+  const res = await fetch(`https://batbatfooddeliveryx.onrender.com/food`, {
     method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
   });
 
   if (!res.ok) throw new Error("Failed to fetch foods");
 
   const data = await res.json();
-  return data; // This is { food: [...] }
+  return data;
 };

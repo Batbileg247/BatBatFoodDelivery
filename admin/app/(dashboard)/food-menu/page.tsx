@@ -1,7 +1,7 @@
-import { getCategories } from "../../lib/services/get-categories";
-import { FoodItem, getFoods } from "../../lib/services/get-foods";
+import { getCategories } from "@/lib/services/get-categories";
 import { FoodCards } from "./_components/FoodCards";
 import { FoodCategory } from "./_components/FoodCategory";
+import { getFoods } from "@/lib/services/get-foods";
 
 const FoodMenuPage = async () => {
   const { categories } = await getCategories();

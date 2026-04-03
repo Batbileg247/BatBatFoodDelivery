@@ -26,11 +26,6 @@ export function AppSidebar() {
       logo: <Van />,
       name: "Order",
     },
-    {
-      id: 3,
-      logo: <Settings />,
-      name: "Settings",
-    },
   ];
   return (
     <Sidebar>

@@ -1,7 +1,19 @@
+import { cookies } from "next/headers";
+
 export const getCategories = async (): Promise<FoodCategories> => {
-  const res = await fetch(`http://localhost:3001/categories`, {
-    method: "GET",
-  });
+  const cookieStore = await cookies();
+
+  const token = cookieStore.get("token")?.value;
+  const res = await fetch(
+    `https://batbatfooddeliveryx.onrender.com/categories`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
   const data = await res.json();
   return data;
 };
