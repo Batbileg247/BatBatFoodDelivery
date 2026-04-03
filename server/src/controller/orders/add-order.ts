@@ -20,10 +20,16 @@ export const addOrder = async (req: Request, res: Response) => {
       data: {
         userId,
         totalPrice: totalPrice,
-        status: "pending",
+        status: "Pending",
         orderItems: {
-          create: orderItems,
+          create: orderItems.map((item) => ({
+            quantity: item.quantity,
+            food: { connect: { id: item.foodId } },
+          })),
         },
+      },
+      include: {
+        orderItems: true,
       },
     });
 

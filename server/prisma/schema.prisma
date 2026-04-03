@@ -57,7 +57,7 @@ model FoodOrder {
   userId     Int
   user       User             @relation(fields: [userId], references: [id])
   totalPrice String
-  status     OrderStatus      @default(pending)
+  status     OrderStatus      @default(Pending)
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @updatedAt
   orderItems FoodOrderItems[]
@@ -69,7 +69,7 @@ enum Role {
 }
 
 enum OrderStatus {
-  pending
-  canceled
-  delivered
+  Pending
+  Cancelled
+  Delivered
 }
