@@ -63,7 +63,7 @@ export const SignIn = () => {
   };
 
   return (
-    <div className="w-full flex justify-center py-10">
+    <div className="w-full flex absolute z-10 pt-20 justify-center">
       <form
         onSubmit={handleSubmit}
         className="flex flex-col gap-6 w-full max-w-104 p-6 border rounded-xl shadow-sm bg-white"
