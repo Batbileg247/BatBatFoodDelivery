@@ -45,7 +45,7 @@ export const SignIn = () => {
       const res = await signIn({ email, password });
 
       if (res?.success) {
-        router.push("/food-menu");
+        router.push("/dashboard/food-menu");
       } else {
         setErrorInfo((prev) => ({
           ...prev,

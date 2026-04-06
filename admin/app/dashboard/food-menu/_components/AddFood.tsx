@@ -14,6 +14,8 @@ import { Label } from "@/components/ui/label";
 import { LoaderCircle, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ChangeEventHandler, useState } from "react";
+import { CldUpload } from "./CldUpload";
+import { postFood } from "@/lib/services/post-food";
 
 export function AddFood({
   categoryName,
@@ -38,7 +40,7 @@ export function AddFood({
     setFood({ ...food, [e.target.name]: e.target.value });
   };
 
-  const postFood = async () => {
+  const handlePostFood = async () => {
     if (
       food.image === "" ||
       food.ingredients === "" ||
@@ -56,13 +58,7 @@ export function AddFood({
       image: food.image,
     };
     try {
-      await fetch("http://localhost:3001/food", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(postBody),
-      });
+      await postFood({ postBody });
       setOpen(false);
       router.refresh();
     } catch (error) {
@@ -128,19 +124,17 @@ export function AddFood({
           </div>
           <div className="flex pb-3 flex-col gap-2">
             <Label>Image</Label>
-            <Input
-              type="text"
-              onChange={onChange}
-              placeholder="Image URL..."
-              className="border-2"
-              name="image"
+            <CldUpload
+              onUpload={(url) => {
+                setFood((prev) => ({ ...prev, image: url }));
+              }}
             />
           </div>
 
           <Button
             type="submit"
             className="w-full"
-            onClick={postFood}
+            onClick={handlePostFood}
             disabled={loading}
           >
             {loading ? <LoaderCircle className="animate-spin" /> : "Add dish"}

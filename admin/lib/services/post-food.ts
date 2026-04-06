@@ -2,23 +2,27 @@
 
 import { cookies } from "next/headers";
 
-export const putOrderStatus = async ({
-  id,
-  status,
+export const postFood = async ({
+  postBody,
 }: {
-  id: number;
-  status: Status;
+  postBody: {
+    name: string;
+    price: string;
+    foodCatId: number;
+    ingredients: string;
+    image: string;
+  };
 }) => {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
-  const res = await fetch(`https://batbatfooddeliveryx.onrender.com/orders/${id}`, {
+  const res = await fetch(`https://batbatfooddeliveryx.onrender.com/food`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ status }),
+    body: JSON.stringify(postBody),
     cache: "no-store",
   });
 
@@ -27,5 +31,3 @@ export const putOrderStatus = async ({
     return { order: [] };
   }
 };
-
-export type Status = "Pending" | "Delivered" | "Cancelled";

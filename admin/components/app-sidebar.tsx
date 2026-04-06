@@ -14,7 +14,7 @@ import Link from "next/link";
 
 export function AppSidebar() {
   const pathName = usePathname();
-  const result = pathName.replaceAll("/", "");
+  const result = pathName.replace(/\/|dashboard/g, ""); 
   const test = [
     {
       id: 1,
@@ -44,7 +44,7 @@ export function AppSidebar() {
             const lower = e.name.toLowerCase().replaceAll(" ", "-");
             const isOn = lower == result;
             return (
-              <Link key={e.id} href={`/${lower}`}>
+              <Link key={e.id} href={`/dashboard/${lower}`}>
                 <Button
                   className="h-10 text-lg hover:border-[#9f9f9f] flex justify-start rounded-full p-4 w-40 hover:border-2"
                   variant={`${isOn ? `default` : `ghost`}`}

@@ -24,6 +24,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { putFood } from "@/lib/services/put-food";
+import { CldUpload } from "./CldUpload";
+import { CldImage } from "next-cloudinary";
+import Image from "next/image";
 
 export function CardsFunction({
   food,
@@ -42,7 +46,7 @@ export function CardsFunction({
     foodCatId: food.foodCatId ?? 0,
   });
   const router = useRouter();
-
+  const defaultCategoryName = category.find((c) => c.id === food.foodCatId);
   const onChange: ChangeEventHandler<HTMLInputElement, HTMLInputElement> = (
     e,
   ) => {
@@ -53,7 +57,7 @@ export function CardsFunction({
     setUpdateFood({ ...updateFood, foodCatId });
   };
 
-  const putFood = async () => {
+  const onUpdate = async () => {
     if (
       updateFood.image === "" ||
       updateFood.ingredients === "" ||
@@ -65,7 +69,7 @@ export function CardsFunction({
     }
 
     setLoading(true);
-    const postBody = {
+    const putBody = {
       name: updateFood.name,
       price: String(updateFood.price),
       foodCatId: Number(updateFood.foodCatId),
@@ -73,13 +77,10 @@ export function CardsFunction({
       image: updateFood.image,
     };
     try {
-      await fetch(`http://localhost:3001/food/${food.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(postBody),
-      });
+      const id = String(food.id);
+      await putFood({ putBody, id });
+      setOpen(false);
+      router.refresh();
 
       setOpen(false);
       router.refresh();
@@ -160,7 +161,7 @@ export function CardsFunction({
             <Label>Food Category</Label>
             <Select onValueChange={(value) => onSelect(Number(value))}>
               <SelectTrigger className="w-full border-2 border-[#E4E4E7]">
-                <SelectValue placeholder="Select a category" />
+                <SelectValue placeholder={defaultCategoryName?.categoryName} />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
@@ -198,16 +199,14 @@ export function CardsFunction({
               defaultValue={food.ingredients}
             />
           </div>
-          <div className="flex w-full gap-2">
+          <div className="flex flex-col w-full gap-2">
             <Label>Image</Label>
-            <Input
-              type="text"
-              onChange={onChange}
-              placeholder="Image URL..."
-              className="border-2"
-              name="image"
-              defaultValue={food.image}
+            <CldUpload
+              onUpload={(url) => {
+                setUpdateFood((prev) => ({ ...prev, image: url }));
+              }}
             />
+            <img src={food.image} alt="" />
           </div>
 
           <div className="flex justify-between">
@@ -223,7 +222,7 @@ export function CardsFunction({
             <Button
               type="submit"
               className=""
-              onClick={putFood}
+              onClick={onUpdate}
               disabled={loading}
             >
               {loading ? (
