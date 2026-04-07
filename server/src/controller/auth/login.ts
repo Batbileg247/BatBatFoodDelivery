@@ -28,7 +28,7 @@ export const userLogin = async (req: Request, res: Response) => {
             role: user.role,
           },
         },
-        "secret",
+        process.env.secret!,
         { expiresIn: "100h" },
       );
       res.status(200).json({ message: "Success", accessToken: token });

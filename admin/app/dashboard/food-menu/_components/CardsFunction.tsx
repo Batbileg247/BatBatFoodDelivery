@@ -124,7 +124,7 @@ export function CardsFunction({
               <img
                 src={food.image}
                 alt=""
-                className="aspect-2/1 object-cover mb-4 rounded-xl"
+                className="aspect-2/1 object-cover mb-4 rounded-xl w-full h-full"
               />
             )}
             <div className="flex flex-col">
@@ -206,7 +206,7 @@ export function CardsFunction({
                 setUpdateFood((prev) => ({ ...prev, image: url }));
               }}
             />
-            <img src={food.image} alt="" />
+            <img src={food.image} alt={food.name} className="aspect-2/1 object-cover mb-4 rounded-xl" />
           </div>
 
           <div className="flex justify-between">
