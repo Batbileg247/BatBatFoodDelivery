@@ -47,7 +47,7 @@ export function CardsFunction({
   });
   const router = useRouter();
   const defaultCategoryName = category.find((c) => c.id === food.foodCatId);
-  const onChange: ChangeEventHandler<HTMLInputElement, HTMLInputElement> = (
+  const onChange: ChangeEventHandler<HTMLInputElement> = (
     e,
   ) => {
     setUpdateFood({ ...updateFood, [e.target.name]: e.target.value });

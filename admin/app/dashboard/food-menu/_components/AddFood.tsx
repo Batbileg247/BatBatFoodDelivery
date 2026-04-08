@@ -34,9 +34,7 @@ export function AddFood({
   }>({ name: "", price: 0, ingredients: "", image: "" });
   const router = useRouter();
 
-  const onChange: ChangeEventHandler<HTMLInputElement, HTMLInputElement> = (
-    e,
-  ) => {
+  const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     setFood({ ...food, [e.target.name]: e.target.value });
   };
 

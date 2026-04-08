@@ -22,9 +22,7 @@ export function AddCategory() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const onChange: ChangeEventHandler<HTMLInputElement, HTMLInputElement> = (
-    e,
-  ) => {
+  const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     setCategoryName(e.target.value);
   };
 
