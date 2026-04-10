@@ -137,7 +137,7 @@ export const SignIn = () => {
             Don't have an account?{" "}
             <span
               className="text-primary cursor-pointer hover:underline font-medium"
-              onClick={() => router.push("/sign-up")}
+              onClick={() => router.push("/")}
             >
               Sign up
             </span>
