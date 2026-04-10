@@ -28,6 +28,7 @@ import { putFood } from "@/lib/services/put-food";
 import { CldUpload } from "./CldUpload";
 import { CldImage } from "next-cloudinary";
 import Image from "next/image";
+import { deleteFood } from "@/lib/services/delete-food";
 
 export function CardsFunction({
   food,
@@ -47,9 +48,7 @@ export function CardsFunction({
   });
   const router = useRouter();
   const defaultCategoryName = category.find((c) => c.id === food.foodCatId);
-  const onChange: ChangeEventHandler<HTMLInputElement> = (
-    e,
-  ) => {
+  const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     setUpdateFood({ ...updateFood, [e.target.name]: e.target.value });
   };
 
@@ -91,15 +90,13 @@ export function CardsFunction({
     setLoading(false);
   };
 
-  const deleteFood = async () => {
+  const onDeleteFood = async () => {
     setLoading(true);
     try {
-      await fetch(`http://localhost:3001/food/${food.id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const id = String(food.id);
+      await deleteFood({ id });
+      setOpen(false);
+      router.refresh();
 
       setOpen(false);
       router.refresh();
@@ -132,7 +129,7 @@ export function CardsFunction({
                 <h1 className="text-[18px] text-[#EF4444] font-semibold capitalize">
                   {food.name}
                 </h1>
-                <p className="font-medium text-base">${food.price}</p>
+                <p className="font-medium text-base">₮{food.price}</p>
               </div>
               <p className="text-[16px]">{food.ingredients}</p>
             </div>
@@ -206,14 +203,18 @@ export function CardsFunction({
                 setUpdateFood((prev) => ({ ...prev, image: url }));
               }}
             />
-            <img src={food.image} alt={food.name} className="aspect-2/1 object-cover mb-4 rounded-xl" />
+            <img
+              src={food.image}
+              alt={food.name}
+              className="aspect-2/1 object-cover mb-4 rounded-xl"
+            />
           </div>
 
           <div className="flex justify-between">
             <Button
               type="submit"
               className="border-[#EF4444] bg-white"
-              onClick={deleteFood}
+              onClick={onDeleteFood}
               disabled={loading}
               variant="outline"
             >
