@@ -11,7 +11,7 @@ export const getFoods = async (): Promise<Food[]> => {
       return [];
     }
     const data = await res.json();
-    return data.foods ?? [];
+    return data.food ?? [];
   } catch (err) {
     console.error("getFoods error:", err);
     return [];

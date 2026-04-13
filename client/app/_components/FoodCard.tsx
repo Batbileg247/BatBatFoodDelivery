@@ -33,7 +33,6 @@ export function FoodCard({ food, cartItem, onAdd, onRemove }: FoodCardProps) {
 
   return (
     <>
-      {/* Card */}
       <div
         className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group"
         style={{ width: "397.333px", height: "342px" }}
@@ -44,9 +43,9 @@ export function FoodCard({ food, cartItem, onAdd, onRemove }: FoodCardProps) {
           className="relative overflow-hidden bg-gray-100"
           style={{ height: "240px" }}
         >
-          {food.img ? (
+          {food.image ? (
             <img
-              src={food.img}
+              src={food.image}
               alt={food.name}
               className="w-full h-full object-cover p-4 rounded-2xl"
             />
@@ -55,8 +54,6 @@ export function FoodCard({ food, cartItem, onAdd, onRemove }: FoodCardProps) {
               🍽
             </div>
           )}
-
-          {/* Add/Remove button */}
           <div
             className="absolute bottom-2 right-2"
             onClick={(e) => e.stopPropagation()}
@@ -92,8 +89,6 @@ export function FoodCard({ food, cartItem, onAdd, onRemove }: FoodCardProps) {
             )}
           </div>
         </div>
-
-        {/* Info */}
         <div className="p-3" style={{ height: "102px" }}>
           <div className="flex justify-between items-start gap-2">
             <p className="font-bold text-[#ef4444] text-[24px] leading-tight">
@@ -108,27 +103,21 @@ export function FoodCard({ food, cartItem, onAdd, onRemove }: FoodCardProps) {
           </p>
         </div>
       </div>
-
-      {/* Overlay */}
       {open && (
         <>
-          {/* Backdrop */}
           <div
             className="fixed inset-0 z-40 bg-black/50"
             onClick={() => setOpen(false)}
           />
-
-          {/* Modal */}
           <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
             <div
               className="bg-white rounded-2xl overflow-hidden flex pointer-events-auto"
               style={{ width: "700px" }}
             >
-              {/* Left - image */}
               <div className=" bg-white" style={{ width: "340px" }}>
-                {food.img ? (
+                {food.image ? (
                   <img
-                    src={food.img}
+                    src={food.image}
                     alt={food.name}
                     className="w-full h-full object-cover"
                     style={{ minHeight: "340px" }}

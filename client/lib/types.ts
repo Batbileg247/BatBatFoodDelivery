@@ -2,19 +2,18 @@ export interface Food {
   id: number;
   name: string;
   price: string;
-  foodCategoryId: number;
+  image: string;
+  ingredients: string;
+  foodCatId: number;
   createdAt: string;
   updatedAt: string;
-  img: string;
-  ingredients: string;
-  category: Category;
 }
 
 export interface Category {
   id: number;
+  categoryName: string;
   createdAt: string;
   updatedAt: string;
-  categoryName: string;
   foods: Food[];
 }
 
@@ -25,15 +24,22 @@ export interface Order {
   status: string;
   createdAt: string;
   updatedAt: string;
+  user?: {
+    id: number;
+    email: string;
+    address: string;
+    phoneNumber: string;
+  };
+  orderItems?: OrderItem[];
 }
 
 export interface User {
   id: number;
   email: string;
-  role: string;
-  password: string;
-  ttl: string;
+  phoneNumber: string;
   address: string;
+  isVerified: boolean;
+  role: "user" | "admin";
   createdAt: string;
   updatedAt: string;
 }
@@ -47,6 +53,6 @@ export type OrderItem = {
     id: number;
     name: string;
     price: string;
-    img: string;
+    image: string;
   };
 };

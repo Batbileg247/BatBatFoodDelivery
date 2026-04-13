@@ -22,12 +22,10 @@ export const ClientContainer = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [cats, foodList] = await Promise.all([
-          getCategories(),
-          getFoods(),
-        ]);
+        const [cats, foodL] = await Promise.all([getCategories(), getFoods()]);
+        console.log(foodL);
         setCategories(cats);
-        setFoods(foodList);
+        setFoods(foodL);
       } catch (err) {
         console.error(err);
       } finally {
@@ -73,16 +71,17 @@ export const ClientContainer = () => {
 
   const filteredFoods =
     activeCategory !== null
-      ? foods.filter((f) => f.foodCategoryId === activeCategory)
+      ? foods.filter((f) => f.foodCatId === activeCategory)
       : foods;
 
   const groupedByCategory = categories
     .map((cat) => ({
       ...cat,
-      foods: filteredFoods.filter((f) => f.foodCategoryId === cat.id),
+      foods: filteredFoods.filter((f) => f.foodCatId === cat.id),
     }))
     .filter((cat) => cat.foods.length > 0)
-    .sort((a, b) => a.categoryName.localeCompare(b.categoryName));
+    .sort((a, b) => (a.categoryName ?? "").localeCompare(b.categoryName ?? ""));
+
   return (
     <div className="min-h-screen bg-[#1a1a1a] font-sans">
       <Header cartCount={cartCount} onCartOpen={() => setCartOpen(true)} />

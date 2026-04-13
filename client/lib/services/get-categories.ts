@@ -13,7 +13,6 @@ export const getCategories = async (): Promise<Category[]> => {
     }
 
     const data = await res.json();
-    console.log(data);
     return data.categories ?? [];
   } catch (err) {
     console.error("getCategories error:", err);
