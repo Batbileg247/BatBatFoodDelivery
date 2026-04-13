@@ -1,16 +1,10 @@
-import { getCategories } from "@/lib/services/get-categories";
-import { MenuItems } from "./_components/MenuItems";
-import { Header } from "./_components/Header";
-import { Footer } from "./_components/Footer";
+import { ClientContainer } from "./_components/Container";
 
-export default async function Home() {
-  const { categories } = await getCategories();
+
+export default function Home() {
   return (
     <div>
-      <Header />
-      <img src="bg.png" alt="" className="w-full" />
-      <MenuItems categories={categories} />
-      <Footer />
+      <ClientContainer />
     </div>
   );
 }

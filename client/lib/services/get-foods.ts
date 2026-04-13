@@ -1,32 +1,19 @@
-import { cookies } from "next/headers";
+import { Food } from "../types";
 
-export interface FoodItem {
-  id: number;
-  name: string;
-  price: string;
-  image: string;
-  ingredients: string;
-  foodCatId: number;
-  createdAt: string;
-  updatedAt: string;
-}
-export interface FoodApiResponse {
-  food: FoodItem[];
-}
-export const getFoods = async (): Promise<FoodApiResponse> => {
-  const cookieStore = await cookies();
+export const getFoods = async (): Promise<Food[]> => {
+  try {
+    const res = await fetch(`https://batbatfooddeliveryx.onrender.com/food`, {
+      cache: "no-store",
+    });
 
-  const token = cookieStore.get("token")?.value;
-  const res = await fetch(`https://batbatfooddeliveryx.onrender.com/food`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!res.ok) throw new Error("Failed to fetch foods");
-
-  const data = await res.json();
-  return data;
+    if (!res.ok) {
+      console.error("getFoods failed:", res.status);
+      return [];
+    }
+    const data = await res.json();
+    return data.foods ?? [];
+  } catch (err) {
+    console.error("getFoods error:", err);
+    return [];
+  }
 };

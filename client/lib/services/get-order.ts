@@ -1,58 +1,26 @@
-"use server";
+import { Order, OrderItem, User } from "../types";
 
-import { cookies } from "next/headers";
 
-export const getOrders = async (): Promise<GetOrderType> => {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
-
-  const res = await fetch(`https://batbatfooddeliveryx.onrender.com/orders`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    console.error("getOrders failed:", res.status, res.statusText);
-    return { order: [] };
-  }
-
-  const data = await res.json();
-  return data;
+export type OrderWithUser = Order & {
+  user?: User;
+  foodOrderItems?: OrderItem[];
 };
 
-export interface GetOrderType {
-  order: Order[];
-}
+export const getOrders = async (): Promise<OrderWithUser[]> => {
+  try {
+    const res = await fetch("https://batbatfooddeliveryx.onrender.com/order", {
+      cache: "no-store",
+    });
 
-export interface Order {
-  id: number;
-  userId: number;
-  totalPrice: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-  user?: {
-    id: number;
-    email: string;
-    address: string;
-    phoneNumber: string;
-  };
-  orderItems?: OrderItem[];
-}
+    if (!res.ok) {
+      console.error("getOrders failed:", res.status, res.statusText);
+      return [];
+    }
 
-export interface OrderItem {
-  id: number;
-  quantity: number;
-  foodId: number;
-  foodOrderId: number;
-  food: {
-    id: number;
-    name: string;
-    price: string;
-    image: string;
-  };
-}
+    const data = await res.json();
+    return Array.isArray(data.order) ? data.order : [];
+  } catch (err) {
+    console.error("getOrders error:", err);
+    return [];
+  }
+};

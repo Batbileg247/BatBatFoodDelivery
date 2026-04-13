@@ -1,17 +1,57 @@
-export const Header = () => {
+"use client";
+
+import { MapPin, ShoppingCart, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+
+type HeaderProps = {
+  cartCount: number;
+  onCartOpen: () => void;
+};
+
+export function Header({ cartCount, onCartOpen }: HeaderProps) {
   return (
-    <header className="bg-[#18181B] fixed px-22 py-3">
-      <div className="flex items-center gap-3">
-        <img src="/icon.png" alt="icon" className="w-11.5 h-10" />
-        <div>
-          <div className="flex font-semibold text-xl">
-            <h1>Bat</h1>
-            <h1 className="text-[#EF4444]">Bat</h1>
+    <header className="sticky top-0 z-50 bg-black border-b border-gray-100 shadow-sm">
+      <div className="max-w-7xl mx-auto px-3 h-16 flex items-center justify-between">
+        <div className="flex gap-3 items-center">
+          <img src="/icon.png" alt="" className="h-10"  />
+          <div>
+            <h1 className="text-[20px] font-semibold text-white">
+              BatBat
+            </h1>
+            <p className="text-[12px] text-white">Swift Delivery</p>
           </div>
-          <p className="">Swift delivery</p>
+        </div>
+
+        {/* Right side */}
+        <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            className="rounded-full gap-2 text-sm text-gray-600 bg-white hover:text-black"
+          >
+            <MapPin size={14} className="text-[#ef4444]" />
+            Add Location
+          </Button>
+
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-full relative bg-white"
+            onClick={onCartOpen}
+          >
+            <ShoppingCart size={16} className="text-black" />
+            {cartCount > 0 && (
+              <Badge className="absolute -top-2 -right-2 w-5 h-5 p-0 flex items-center justify-center bg-[#ef4444] hover:bg-[#ef4444] text-[10px]">
+                {cartCount}
+              </Badge>
+            )}
+          </Button>
+
+          <Button size="icon" className="rounded-full bg-red-500">
+            <User size={16} className="text-white" />
+          </Button>
         </div>
       </div>
-      <div></div>
     </header>
   );
-};
+}

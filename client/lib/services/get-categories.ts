@@ -1,42 +1,22 @@
-import { cookies } from "next/headers";
+import { Category } from "../types";
 
-export const getCategories = async (): Promise<FoodCategories> => {
-  const cookieStore = await cookies();
+export const getCategories = async (): Promise<Category[]> => {
+  try {
+    const res = await fetch(
+      `https://batbatfooddeliveryx.onrender.com/categories`,
+      { cache: "no-store" },
+    );
 
-  const token = cookieStore.get("token")?.value;
-  const res = await fetch(
-    `https://batbatfooddeliveryx.onrender.com/categories`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  );
-  const data = await res.json();
-  return data;
+    if (!res.ok) {
+      console.error("getCategories failed:", res.status);
+      return [];
+    }
+
+    const data = await res.json();
+    console.log(data);
+    return data.categories ?? [];
+  } catch (err) {
+    console.error("getCategories error:", err);
+    return [];
+  }
 };
-
-export interface FoodCategories {
-  categories: Category[];
-}
-
-export interface Category {
-  id: number;
-  categoryName: string;
-  createdAt: string;
-  updatedAt: string;
-  foods: Food[];
-}
-
-export interface Food {
-  id: number;
-  name: string;
-  price: string;
-  image: string;
-  ingredients: string;
-  foodCatId: number;
-  createdAt: string;
-  updatedAt: string;
-}
