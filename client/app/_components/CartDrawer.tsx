@@ -105,9 +105,9 @@ export function CartDrawer({
                   <div key={item.id}>
                     <div className="flex gap-3 py-3">
                       {/* Image */}
-                      {item.img ? (
+                      {item.image ? (
                         <img
-                          src={item.img}
+                          src={item.image}
                           alt={item.name}
                           className="w-20 h-20 rounded-xl object-cover flex-shrink-0"
                         />
